@@ -1,6 +1,7 @@
 package com.knight2689.springbootmall.service.impl;
 
 import com.knight2689.springbootmall.dao.UserDao;
+import com.knight2689.springbootmall.dto.UserLoginRequest;
 import com.knight2689.springbootmall.dto.UserRegisterRequest;
 import com.knight2689.springbootmall.model.User;
 import com.knight2689.springbootmall.service.UserService;
@@ -36,5 +37,23 @@ public class UserServiceImpl implements UserService {
 
         // 創建帳號
         return userDao.createUser(userRegisterRequest);
+    }
+
+    @Override
+    public User login(UserLoginRequest userLoginRequest) {
+
+        User user = userDao.getUserByEmail(userLoginRequest.getEmail());
+
+        if (user == null) {
+            log.warn("該 email {} 尚未註冊", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
+
+        if (user.getPassword().equals(userLoginRequest.getPassword())) {
+            return user;
+        } else{
+            log.warn("email {} 密碼不正確", userLoginRequest.getEmail());
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
+        }
     }
 }
