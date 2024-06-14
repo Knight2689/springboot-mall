@@ -108,14 +108,14 @@ public class ProductDaoImal implements ProductDao {
     }
 
     @Override
-    public void updateProduct(Integer ProductId, ProductRequest productRequest) {
+    public void updateProduct(Integer productId, ProductRequest productRequest) {
 
         String sql = "UPDATE product SET product_name=:productName, category=:category, image_url=:imageUrl," +
                 "price=:price,  stock=:stock, description=:description," +
                 "last_modified_date=:lastModifiedDate WHERE product_id=:productId";
 
         Map<String, Object> map = new HashMap<>();
-        map.put("productId", ProductId);
+        map.put("productId", productId);
 
         map.put("productName", productRequest.getProductName());
         map.put("category", productRequest.getCategory().toString());
@@ -130,12 +130,25 @@ public class ProductDaoImal implements ProductDao {
     }
 
     @Override
-    public void deleteProductById(Integer ProductId) {
+    public void updateStock(Integer proudctId, Integer stock) {
+        String sql = "UPDATE product SET stock=:stock, last_modified_date=:lastModifiedDate " +
+                " WHERE product_id=:productId";
+
+        Map<String, Object> map = new HashMap<>();
+        map.put("productId",proudctId);
+        map.put("stock",stock);
+        map.put("lastModifiedDate", new Date());
+
+        namedParameterJdbcTemplate.update(sql,map);
+    }
+
+    @Override
+    public void deleteProductById(Integer productId) {
 
         String sql = "DELETE FROM product WHERE product_id = :productId";
 
         Map<String, Object> map = new HashMap<>();
-        map.put("productId", ProductId);
+        map.put("productId", productId);
 
         namedParameterJdbcTemplate.update(sql, map);
 
